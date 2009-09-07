@@ -33,5 +33,6 @@ Library
     -Wall
   Exposed-Modules:
     Data.UnionFind.IO
+    Data.UnionFind.IntMap
   Hs-Source-Dirs: src
 

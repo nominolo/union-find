@@ -2,11 +2,12 @@
 {-# LANGUAGE BangPatterns #-}
 {-# OPTIONS_GHC -funbox-strict-fields #-}
 module Data.UnionFind.IntMap 
-    ( newPointSupply, fresh, repr, descr, union, equivalent ) where
+    ( newPointSupply, fresh, repr, descr, union, equivalent,
+      PointSupply, Point ) where
 
 import qualified Data.IntMap as IM
 
-data PointSupply s a = PointSupply !Int (IM.IntMap (Link a))
+data PointSupply a = PointSupply !Int (IM.IntMap (Link a))
   deriving Show
 
 data Link a 
@@ -19,20 +20,20 @@ data Link a
 
 newtype Point a = Point Int
 
-newPointSupply :: forall a s. PointSupply s a
+newPointSupply :: PointSupply a
 newPointSupply = PointSupply 0 IM.empty
 
-fresh :: PointSupply s a -> a -> (PointSupply s a, Point s)
+fresh :: PointSupply a -> a -> (PointSupply a, Point a)
 fresh (PointSupply next eqs) a =
   (PointSupply (next + 1) (IM.insert next (Info 0 a) eqs), Point next)
 
 -- freshList :: PointSupply a -> [a] -> (PointSupply a, [Point a])
 -- freshList 
 
-repr :: PointSupply s a -> Point s -> Point s
+repr :: PointSupply a -> Point a -> Point a
 repr ps p = reprInfo ps p (\n _rank _a -> Point n)
 
-reprInfo :: PointSupply s a -> Point s -> (Int -> Int -> a -> r) -> r
+reprInfo :: PointSupply a -> Point a -> (Int -> Int -> a -> r) -> r
 reprInfo (PointSupply _next eqs) (Point n) k = go n
   where
     go !i =
@@ -40,7 +41,7 @@ reprInfo (PointSupply _next eqs) (Point n) k = go n
         Link i' -> go i'
         Info r a -> k i r a
   
-union :: PointSupply s a -> Point s -> Point s -> PointSupply s a
+union :: PointSupply a -> Point a -> Point a -> PointSupply a
 union ps@(PointSupply next eqs) p1 p2 =
   reprInfo ps p1 $ \i1 r1 _a1 -> 
   reprInfo ps p2 $ \i2 r2 a2 ->
@@ -59,10 +60,10 @@ union ps@(PointSupply next eqs) p1 p2 =
             !eqs2 = IM.insert i2 (Link i1) eqs1 in
         PointSupply next eqs2
 
-descr :: PointSupply s a -> Point s -> a
+descr :: PointSupply a -> Point a -> a
 descr ps p = reprInfo ps p (\_ _ a -> a)
 
-equivalent :: PointSupply s a -> Point s -> Point s -> Bool
+equivalent :: PointSupply a -> Point a -> Point a -> Bool
 equivalent ps p1 p2 =
   reprInfo ps p1 $ \i1 _ _ ->
   reprInfo ps p2 $ \i2 _ _ ->
