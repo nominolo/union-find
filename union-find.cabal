@@ -28,11 +28,13 @@ Source-Repository head
 
 Library
   Build-Depends:
-    base >= 4 && < 5
+    base >= 4 && < 5, containers >= 0.3, transformers >= 0.2
   GHC-Options:
     -Wall
   Exposed-Modules:
+    Control.Monad.Trans.UnionFind
     Data.UnionFind.IO
+    Data.UnionFind.ST
     Data.UnionFind.IntMap
   Hs-Source-Dirs: src
 
