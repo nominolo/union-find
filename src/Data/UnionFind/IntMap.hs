@@ -1,8 +1,12 @@
 {-# LANGUAGE Rank2Types #-}
 {-# LANGUAGE BangPatterns #-}
 {-# OPTIONS_GHC -funbox-strict-fields #-}
+--
+-- NOTE: Does not currently ensure that a 'Point' was indeed generated
+-- by the specified 'PointSupply'.
+--
 module Data.UnionFind.IntMap 
-    ( newPointSupply, fresh, repr, descr, union, equivalent,
+    ( newPointSupply, fresh, repr, descriptor, union, equivalent,
       PointSupply, Point ) where
 
 import qualified Data.IntMap as IM
@@ -60,8 +64,8 @@ union ps@(PointSupply next eqs) p1 p2 =
             !eqs2 = IM.insert i2 (Link i1) eqs1 in
         PointSupply next eqs2
 
-descr :: PointSupply a -> Point a -> a
-descr ps p = reprInfo ps p (\_ _ a -> a)
+descriptor :: PointSupply a -> Point a -> a
+descriptor ps p = reprInfo ps p (\_ _ a -> a)
 
 equivalent :: PointSupply a -> Point a -> Point a -> Bool
 equivalent ps p1 p2 =
