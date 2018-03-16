@@ -23,6 +23,7 @@ data Link a
      deriving Show
 
 newtype Point a = Point Int
+  deriving Eq
 
 newPointSupply :: PointSupply a
 newPointSupply = PointSupply 0 IM.empty
