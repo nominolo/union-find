@@ -41,7 +41,7 @@ fresh x = UnionFindT . StateT $ return . swap . flip UF.fresh x
 repr :: Monad m => Point p -> UnionFindT p m (Point p)
 repr = UnionFindT . State.gets . flip UF.repr
 
--- | Return the descriptor of the 
+-- | Return the descriptor of the point.
 descriptor :: Monad m => Point p -> UnionFindT p m p
 descriptor = UnionFindT . State.gets . flip UF.descriptor
 
